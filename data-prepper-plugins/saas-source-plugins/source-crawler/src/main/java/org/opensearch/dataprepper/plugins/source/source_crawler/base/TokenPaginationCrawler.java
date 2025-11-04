@@ -120,6 +120,7 @@ public class TokenPaginationCrawler implements Crawler<PaginationCrawlerWorkerPr
         String partitionKey = itemInfo.getPartitionKey();
         List<String> itemIds = itemInfoList.stream().map(ItemInfo::getId).collect(Collectors.toList());
         PaginationCrawlerWorkerProgressState state = new PaginationCrawlerWorkerProgressState();
+        state.setPartitionCreationTime(Instant.now());
         state.setKeyAttributes(itemInfo.getKeyAttributes());
         state.setItemIds(itemIds);
         state.setExportStartTime(Instant.now());

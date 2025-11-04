@@ -29,6 +29,7 @@ public class PaginationCrawlerWorkerProgressStateTest {
         assertTrue(workerProgressState.getKeyAttributes().isEmpty());
         assertNull(workerProgressState.getExportStartTime());
         assertNull(workerProgressState.getItemIds());
+        assertNull(workerProgressState.getPartitionCreationTime());
     }
 
     @Test
@@ -39,6 +40,7 @@ public class PaginationCrawlerWorkerProgressStateTest {
                 "  \"totalItems\": 10,\n" +
                 "  \"loadedItems\": 20,\n" +
                 "  \"exportStartTime\": \"2024-10-20T02:27:15.717Z\",\n" +
+                " \"partitionCreationTime\": \"2024-10-20T02:27:15.000Z\",\n" +
                 "  \"itemIds\": [\"GTMS-25\", \"GTMS-24\"]\n" +
                 "}";
 
@@ -48,6 +50,7 @@ public class PaginationCrawlerWorkerProgressStateTest {
         assertNotNull(workerProgressState.getKeyAttributes());
         assertEquals("project-1", workerProgressState.getKeyAttributes().get("project"));
         assertEquals(Instant.parse("2024-10-20T02:27:15.717Z"), workerProgressState.getExportStartTime());
+        assertEquals(Instant.parse("2024-10-20T02:27:15.000Z"), workerProgressState.getPartitionCreationTime());
         assertNotNull(workerProgressState.getItemIds());
         assertEquals(2, workerProgressState.getItemIds().size());
     }

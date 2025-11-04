@@ -40,6 +40,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.mockito.ArgumentMatchers.argThat;  
 
 @ExtendWith(MockitoExtension.class)
 public class TokenPaginationCrawlerTest {
@@ -230,6 +231,25 @@ public class TokenPaginationCrawlerTest {
         when(client.listItems(lastToken)).thenReturn(itemInfoList.iterator());
         crawler.crawl(leaderPartition, coordinator);
         assertEquals("1", ((TokenLeaderProgressState) leaderPartition.getProgressState().get()).getLastToken());
+    }
+
+    @Test
+    void testPartitionCreationTimeIsSet() {
+        List<ItemInfo> itemInfoList = Collections.singletonList(new TestItemInfo("testId"));
+        when(client.listItems(INITIAL_TOKEN)).thenReturn(itemInfoList.iterator());
+        
+        Instant beforeCrawl = Instant.now();
+        crawler.crawl(leaderPartition, coordinator);
+        Instant afterCrawl = Instant.now();
+        
+        verify(coordinator).createPartition(argThat(partition -> {
+            PaginationCrawlerWorkerProgressState state = 
+                (PaginationCrawlerWorkerProgressState) partition.getProgressState().get();
+            Instant creationTime = state.getPartitionCreationTime();
+            return creationTime != null &&
+                !creationTime.isBefore(beforeCrawl) &&
+                !creationTime.isAfter(afterCrawl);
+        }));
     }
 
     private ItemInfo createTestItemInfo(String id) {

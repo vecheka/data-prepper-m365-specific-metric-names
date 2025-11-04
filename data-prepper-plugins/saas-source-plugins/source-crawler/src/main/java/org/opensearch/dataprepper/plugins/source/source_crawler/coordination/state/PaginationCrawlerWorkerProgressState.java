@@ -30,4 +30,7 @@ public class PaginationCrawlerWorkerProgressState implements SaasWorkerProgressS
     @JsonProperty("itemIds")
     private List<String> itemIds;
 
+    @JsonProperty("partitionCreationTime")
+    private Instant partitionCreationTime;
+
 }
